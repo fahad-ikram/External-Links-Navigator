@@ -4,6 +4,13 @@ import time
 import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+if "url" not in st.session_state:
+    st.session_state["url"] = ""
+if "article_class" not in st.session_state:
+    st.session_state["article_class"] = ""
+# Function to clear the text inputs
+def clear_inputs():
+    st.session_state.clear()
 # Function to extract the domain from a URL
 def extract_domain(url):
     try:
@@ -83,7 +90,8 @@ if url and article_class:
                     label="Download CSV",
                     data=csv_data,
                     file_name="external_links.csv",
-                    mime="text/csv"
+                    mime="text/csv",
+                    on_click=st.session_state.clear()
                 )
             # Display results
             st.subheader("Extracted External Links")
