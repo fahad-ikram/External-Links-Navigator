@@ -31,7 +31,7 @@ This Streamlit app extracts external links from a specific article section of a 
 2. Install the required libraries:
 
    ```bash
-   pip install streamlit requests beautifulsoup4
+   pip install pandas streamlit requests beautifulsoup4 urllib3 time
    ```
 
 3. Run the app:
