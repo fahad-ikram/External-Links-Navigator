@@ -4,6 +4,42 @@ import time
 import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from st_social_media_links import SocialMediaIcons
+# Sidebar: Profile image and name
+with st.sidebar:
+    st.image("fahad.png", width=250)
+    st.markdown("<h4 style='text-align: center; margin-top: 0;'>Fahad Ikram</h4>", unsafe_allow_html=True)
+    st.markdown("---")
+
+# Define professional and personal social links
+professional_links = [
+    "https://www.linkedin.com/in/fahad-ikram",
+    "https://www.x.com/fahadikramx",
+    "https://www.github.com/fahad-ikram",
+]
+personal_links = [
+    "https://www.instagram.com/fahadikramofficial",
+    "https://www.facebook.com/fahadikramofficial",
+    "https://www.youtube.com/@fahadikramofficial",
+]
+
+# Create icon components
+professional_icons = SocialMediaIcons(professional_links)
+personal_icons = SocialMediaIcons(personal_links)
+
+# Spacer to push icons toward bottom
+st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+
+# Render icons
+with st.sidebar:
+    st.subheader("Connect with Me")
+    professional_icons.render()
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    personal_icons.render()
+    st.markdown("---")
+    st.markdown("<p style='text-align: center; margin-top: 0; color:#888B8F'>Created by @Fahad Ikram</p>", unsafe_allow_html=True)
+
+
 if "url" not in st.session_state:
     st.session_state["url"] = ""
 if "article_class" not in st.session_state:
@@ -11,11 +47,15 @@ if "article_class" not in st.session_state:
 # Function to clear the text inputs
 def clear_inputs():
     st.session_state.clear()
-# Function to extract the domain from a URL
+
 def extract_domain(url):
     try:
         parsed = urlparse(url)
-        return parsed.netloc.split(':')[0]
+        domain = parsed.netloc.split(':')[0]
+        # Remove www. prefix for cleaner domain names (optional)
+        if domain.startswith("www."):
+            domain = domain[4:]
+        return domain
     except Exception as e:
         st.error(f"Error extracting domain: {e}")
         return None
@@ -95,7 +135,7 @@ if url and article_class:
                 )
             # Display results
             st.subheader("Extracted External Links")
-            for domain in sorted(unique_domains):
-                st.write(f"https://{domain}/")
+            st.dataframe(pd.DataFrame(sorted(unique_domains), columns=["External Links"]))
         except requests.exceptions.RequestException as e:
             st.error(f"Error fetching URL: {e}")
+
