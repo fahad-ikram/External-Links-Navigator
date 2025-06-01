@@ -9,7 +9,7 @@ from st_social_media_links import SocialMediaIcons
 st.markdown(
     """
     <style>
-    [data-testid="stSidebar"] {min-width: 200px; max-width: 250px;}
+    [data-testid="stSidebar"] {min-width: 250px; max-width: 250px;}
     </style>
     """, unsafe_allow_html=True
 )
