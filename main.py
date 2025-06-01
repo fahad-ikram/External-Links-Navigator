@@ -5,41 +5,41 @@ import pandas as pd
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from st_social_media_links import SocialMediaIcons
-# Sidebar: Profile image and name
-with st.sidebar:
-    st.image("fahad.png", width=250)
-    st.markdown("<h4 style='text-align: center; margin-top: 0;'>Fahad Ikram</h4>", unsafe_allow_html=True)
-    st.markdown("---")
 
-# Define professional and personal social links
-professional_links = [
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"] {min-width: 200px; max-width: 250px;}
+    </style>
+    """, unsafe_allow_html=True
+)
+
+links = [
     "https://www.linkedin.com/in/fahad-ikram",
     "https://www.x.com/fahadikramx",
     "https://www.github.com/fahad-ikram",
-]
-personal_links = [
     "https://www.instagram.com/fahadikramofficial",
     "https://www.facebook.com/fahadikramofficial",
     "https://www.youtube.com/@fahadikramofficial",
 ]
 
-# Create icon components
-professional_icons = SocialMediaIcons(professional_links)
-personal_icons = SocialMediaIcons(personal_links)
+def chunk(lst, n=3):
+    return [lst[i:i+n] for i in range(0, len(lst), n)]
 
-# Spacer to push icons toward bottom
-st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-
-# Render icons
 with st.sidebar:
-    st.subheader("Connect with Me")
-    professional_icons.render()
-    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-    personal_icons.render()
+    st.image("fahad.png", width=250)
+    st.markdown("<h4 style='text-align:center; margin-top:0;'>Fahad Ikram</h4>", unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("<p style='text-align: center; margin-top: 0; color:#888B8F'>Created by @Fahad Ikram</p>", unsafe_allow_html=True)
+    st.markdown("### Connect with me")
+    for group in chunk(links):
+        cols = st.columns(len(group))
+        for col, link in zip(cols, group):
+            with col:
+                SocialMediaIcons([link]).render()
+    st.markdown("---")
+    st.markdown("<p style='color:#888B8F; text-align:center;'>Created by @Fahad Ikram</p>", unsafe_allow_html=True)
 
-
+# Initialize session state variables
 if "url" not in st.session_state:
     st.session_state["url"] = ""
 if "article_class" not in st.session_state:
@@ -81,10 +81,14 @@ def filter_links(hrefs, base_url, social_media_domains):
         and not any(domain in link for domain in social_media_domains)  # Exclude social media links
     ]
 # Streamlit user inputs
-st.title("External Links Navigator")
+st.markdown(
+    """# :rainbow[External Links Navigator]"""
+    )
+# st.title("External Links Navigator")
 url = st.text_input("Enter the URL", key="url")
 article_class = st.text_input("Enter the CSS class name of article", key="article_class")
-progress_bar = st.progress(0)
+if url and article_class:
+    progress_bar = st.progress(0)
 status_text = st.empty()
 if url and article_class:
     if not is_valid_url(url):
